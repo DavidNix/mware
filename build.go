@@ -8,3 +8,7 @@ func Build(final http.Handler, m ...Middleware) http.Handler {
 	}
 	return final
 }
+
+func BuildFunc(final http.HandlerFunc, m ...Middleware) http.Handler {
+	return Build(final, m...)
+}
