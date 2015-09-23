@@ -2,20 +2,23 @@ package mware
 
 import "net/http"
 
-// Returns a handler composed of a slice of Middleware with final http.Handler as the last handler in the stack.
+// Returns a handler composed of a slice of Middleware with final http.Handler as the last handler to be invoked.
 // The handler returned executes Middleware in the same order as the slice.
+//
+// For example:
+// myComposedHandler := Build(ShowIndexPage, LogRequest, RecoverFromPanics, SetContentTypes, AuthenticateUser)
+// The request lifecycle will be LogRequest -> RecoverFromPanics -> SetContentTypes -> AuthenticateUser -> ShowIndexPage
 //
 // For clarity, a verbose implementation could look like:
 //
 // func Build(final http.Handler, middlewareSlice ...Middleware) http.Handler {
-//	composedHandler = final
+//	composedHandler := final
 // 	for i := len(middlewareSlice) - 1; i >= 0; i-- {
 //		middleware = middlewareSlice[i]
-// 		composedHandler = middleWare(composedHandler)
+// 		composedHandler = middleware(composedHandler)
 // 	}
 // 	return composedHandler
 // }
-//
 //
 func Build(final http.Handler, m ...Middleware) http.Handler {
 	for i := len(m) - 1; i >= 0; i-- {
